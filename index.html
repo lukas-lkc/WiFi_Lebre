@@ -1,12 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
     <title>WiFi Lebre</title>
 </head>
+
 <body>
-    <h1>WiFi Lebre</h1>
-    <p1>Olá!</p1>
+    <section class="section">
+
+        <form id="controladorForm">
+            <div class="title">
+                <h1>WiFi Lebre</h1>
+                <P>Testes de Canal</P>
+            </div>
+            <label for="qt">Quantidade de Testes:</label>
+            <input type="number" id="qt" name="qt" required><br>
+
+            <label for="local">Local do Teste:</label>
+            <input type="text" id="local" name="local"><br>
+
+            <label for="tool">Ferramenta Utilizada:</label>
+            <input type="text" id="tool" name="tool"><br>
+
+            <select name="select" id="select">
+                <option selected disabled value="0"></option>
+                <option value="2.4GHz">2.4GHz</option><!--aqui ela não colocou valor-->
+                <option value="5GHz">5GHz</option>
+            </select>
+            <button type="submit">Aplicar</button> <!--assistir ao vídeo do mano do form pra colocar o icon de load-->
+        </form>
+        <!--
+        <form class="form2G" id="form2G">
+
+            <h1>Canal 1</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 2</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 3</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 4</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 5</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 6</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 7</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 8</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 9</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 10</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <h1>Canal 11</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <button type="submit1">Salvar Resultado</button>
+        </form>
+
+        <form class="form5G" id="form5G">
+
+            <h1>Canal 40</h1>
+
+            <label for="dw">Velocidade de Download (Mbps):</label>
+            <input type="number" id="dw" name="dw" step="0.01" required><br>
+
+            <label for="up">Velocidade de Upload (Mbps):</label>
+            <input type="number" id="up" name="up" step="0.01" required><br>
+
+            <label for="ms">Ping (ms):</label>
+            <input type="number" id="ms" name="ms" required><br>
+
+            <button type="submit2">Salvar Resultado</button>
+            
+        </form>
+        -->
+    </section>
 </body>
+
 </html>
