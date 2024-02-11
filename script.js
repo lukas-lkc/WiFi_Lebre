@@ -14,108 +14,189 @@
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Função para lidar com o envio do formulário
+    let canalSelecionado;
 
-
-    /*
-    // Faz uma requisição POST para o servidor com os dados do formulário
-    fetch('/submit', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-    })
-        .then(response => {
-            if (response.ok) {
-                console.log('Dados enviados com sucesso!');
-                // Limpa os campos do formulário após o envio
-                event.target.reset();
-            } else {
-                console.error('Erro ao enviar dados:', response.statusText);
-            }
-        })
-        .catch(error => {
-            console.error('Erro ao enviar dados:', error);
-        });
-        */
-
-    /*
-    // Obtém uma referência para o elemento select
-    const selectElement = document.getElementById('select');
-
-    // Adiciona um listener para o evento de mudança (change)
-    selectElement.addEventListener('change', function () {
+    const formVisible2 = document.getElementById('formCh1');
+    const formVisible5 = document.getElementById('formCh40');
+    document.getElementById('controladorForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Evita que o formulário seja submetido normalmente
         // Obtém o valor da opção selecionada
-        const selectedOption = selectElement.value;
+        const selectedOption = document.getElementById('select1').value;
 
-        // Faça o que quiser com o valor selecionado
-        console.log('Opção selecionada:', selectedOption);
+        // Verifica o valor selecionado e aplica as mudanças apenas quando clicar em "Aplicar"
         if (selectedOption === '2.4GHz') {
-            document.getElementById('form2G').style.display = 'block';
-            document.getElementById('form5G').style.display = 'none';
+            formVisible2.style.display = 'block';
+            
+            const forms = document.querySelectorAll('.form5G');
+            forms.forEach(form => {
+                form.style.display = 'none';
+            });
+            // document.querySelector('.form5G').style.display = 'none';
         } else {
-            document.getElementById('form2G').style.display = 'none';
-            document.getElementById('form5G').style.display = 'block';
+            formVisible5.style.display = 'block';
+
+            const forms = document.querySelectorAll('.form2G');
+            forms.forEach(form => {
+                form.style.display = 'none';
+            });
+            // document.querySelector('.form5G').style.display = 'block';
         }
-    });*/
-    /*
-    //função load
-    const button = document.querySelector('button');
-    const addloading = () => {
-        button.innerHTML = '<img scr"./loading.png" class="loading">';
+    });
+
+    //animação dos botões
+    const buttons = document.querySelectorAll('.btnSalvar'); // Use querySelectorAll para selecionar todos os elementos com a classe .btnSalvar
+    // Defina a função addloading
+    function addloading() {
+
+        // Itere sobre todos os botões selecionados e adicione a imagem SVG e a animação a cada um
+        buttons.forEach(button => {
+            button.innerHTML =
+                `<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                class="btnSalvarAnim" viewBox="-3 -3 18 18">
+                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" stroke-width="4" />
+                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" stroke-width="4" /></svg>`;
+        });
     }
-    //função complete
-    const removeloading = () => {
-        button.innerHTML = 'Enviar';
+
+    function removerLoad() {
+        // Itere sobre todos os botões selecionados e adicione a imagem SVG e a animação a cada um
+        buttons.forEach(button => {
+            button.innerHTML = 'Salvar';
+        });
     }
-    */
 
-    //função que limpa os formulários
-    /*
-    function limparFormulario(formularioId) {
-        const form = document.getElementById(formularioId);
-        const elementos = form.elements;
 
-        for (let i = 0; i < elementos.length; i++) {
-            const tipo = elementos[i].type;
-            if (tipo === "text" || tipo === "number" || tipo === "textarea" || tipo === "password") {
-                // Limpa os campos de texto, número, textarea e password
-                elementos[i].value = "";
-            } else if (tipo === "select-one" || tipo === "select-multiple") {
-                // Reseta selects
-                elementos[i].selectedIndex = -1;
-            } else if (tipo === "checkbox" || tipo === "radio") {
-                // Desmarca checkboxes e radios
-                elementos[i].checked = false;
-            }
-        }
+    //pega os dados das variáveis e direciona para a planilha
+    function handleFormSubmit(formSelector, urlPlanilha) {
+        const form = document.querySelector(formSelector);
+        const canal = form.dataset.canal;
+
+        const handleSubmit = (event) => {
+            event.preventDefault(); // impede o recarregamento da página
+            console.log("Formulário submetido", form);
+
+            addloading()
+            const frequencia = document.querySelector('#select1').value;
+            const canal = parseInt(document.querySelector(`${formSelector} h1`).getAttribute('value'));
+            const download = document.querySelector(`${formSelector} input[name=dw]`).value;
+            const upload = document.querySelector(`${formSelector} input[name=up]`).value;
+            const ms = document.querySelector(`${formSelector} input[name=ms]`).value;
+
+            const dadosParaEnviar = { frequencia, canal, download, upload, ms };
+            console.log("Dados a serem enviados:", dadosParaEnviar);
+
+            // Passa o número do canal como parâmetro adicional para a função enviarDadosParaPlanilha
+            enviarDadosParaPlanilha(urlPlanilha, dadosParaEnviar, canal);
+        };
+
+        form.addEventListener('submit', handleSubmit);
     }
-    */
 
-    //função pra subir os dados
-    const handleSubmit = (event) => {
-        event.preventDefault(); //impede o recarregamento da página
+    const urlPlanilha = 'https://api.sheetmonkey.io/form/nM1XjZZREJ1rZ6fQxGJphG';
 
-        const qt = document.querySelector('input[name=qt]').value;
-        const local = document.querySelector('input[name=local]').value;
-        const tool = document.querySelector('input[name=tool]').value; //só é usado input quando tem campo
-        const select = document.querySelector('#select').value;
+    //2GHz
+    handleFormSubmit('#formCh1', urlPlanilha);
+    handleFormSubmit('#formCh2', urlPlanilha);
+    handleFormSubmit('#formCh3', urlPlanilha);
+    handleFormSubmit('#formCh4', urlPlanilha);
+    handleFormSubmit('#formCh5', urlPlanilha);
+    handleFormSubmit('#formCh6', urlPlanilha);
+    handleFormSubmit('#formCh7', urlPlanilha);
+    handleFormSubmit('#formCh8', urlPlanilha);
+    handleFormSubmit('#formCh9', urlPlanilha);
+    handleFormSubmit('#formCh10', urlPlanilha);
+    handleFormSubmit('#formCh11', urlPlanilha);
 
-        //abaixo função que sobe os dados para a planilha
-        fetch('https://api.sheetmonkey.io/form/nM1XjZZREJ1rZ6fQxGJphG', { //ao executar a função handleS q tá no botão vai ser feito um post nessa URL
+    //5GHz
+    handleFormSubmit('#formCh40', urlPlanilha);
 
-            //abaixo temos o pacote que será enviado
+
+    // envia os dados para a planilha
+    function enviarDadosParaPlanilha(url, dados, canal) {
+        fetch(url, {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ qt, local, tool, select }), //aqui tem um obj js e está sendo convertido em string JSON p/ ser enviado no pacote
-        })//.then(()=> removeload()).then(()=> limpaFormulario()); //habilitar isso quando tiver o load!!!!
-    }
+            body: JSON.stringify(dados),
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`Dados enviados com sucesso!`);
+                } else {
+                    console.error(`Erro ao enviar dados`);
+                }
+            })
+            .catch(error => console.error('Erro:', error))
+            .then(() => {
+                const formCh1 = document.getElementById('formCh1');
+                const formCh2 = document.getElementById('formCh2');
+                const formCh3 = document.getElementById('formCh3');
+                const formCh4 = document.getElementById('formCh4');
+                const formCh5 = document.getElementById('formCh5');
+                const formCh6 = document.getElementById('formCh6');
+                const formCh7 = document.getElementById('formCh7');
+                const formCh8 = document.getElementById('formCh8');
+                const formCh9 = document.getElementById('formCh9');
+                const formCh10 = document.getElementById('formCh10');
+                const formCh11 = document.getElementById('formCh11');
+                //5GHz
+                const formCh40 = document.getElementById('formCh40');
+                removerLoad()
+                switch (canal) {
+                    case 1:
+                        formCh1.style.display = 'none';
+                        formCh2.style.display = 'block';
+                        break
+                    case 2:
+                        formCh2.style.display = 'none';
+                        formCh3.style.display = 'block';
+                        break
+                    case 3:
+                        formCh3.style.display = 'none';
+                        formCh4.style.display = 'block';
+                        break;
+                    case 4:
+                        formCh4.style.display = 'none';
+                        formCh5.style.display = 'block';
+                        break;
+                    case 5:
+                        formCh5.style.display = 'none';
+                        formCh6.style.display = 'block';
+                        break;
+                    case 6:
+                        formCh6.style.display = 'none';
+                        formCh7.style.display = 'block';
+                        break;
+                    case 7:
+                        formCh7.style.display = 'none';
+                        formCh8.style.display = 'block';
+                        break;
+                    case 8:
+                        formCh8.style.display = 'none';
+                        formCh9.style.display = 'block';
+                        break;
+                    case 9:
+                        formCh9.style.display = 'none';
+                        formCh10.style.display = 'block';
+                        break;
+                    case 10:
+                        formCh10.style.display = 'none';
+                        formCh11.style.display = 'block';
+                        break;
+                    case 11:
+                        formCh11.style.display = 'none';
+                        formCh1.style.display = 'block';
+                        break;
 
-    document.querySelector('#controladorForm').addEventListener('submit', handleSubmit);
-    //esse código está criando uma escuta em todo o form controladorForm e adicionando o evento submit que dispara a function handleSubmit
+                    //5GHz
+                    case 40:
+                        formCh1.style.display = 'none';
+                        formCh40.style.display = 'block';
+                        break;
+                }
+            });
+    }
 
 });
