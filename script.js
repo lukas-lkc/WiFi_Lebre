@@ -1,5 +1,12 @@
 /**
  * 
+ * next tasks: btns animations, clear innerHTML pargrapher for new informations, 
+ * css results, performance download results, 
+ * notification to downloadResults complete if I can't improve performance dw, to change ms to latence,
+ * to check why data frequencia is undefined and fix that, add option to check resultos for each frequence.
+ * 
+ * future tasks: input to recive user's API URL and Sheet URL.
+ * 
  * Vídeo que cria a integração entre a aplicação e a planilha:
  * https://www.youtube.com/watch?v=w7SUjrKCdwE
  * SW Monkey https://dashboard.sheetmonkey.io/edit/nM1XjZZREJ1rZ6fQxGJphG
@@ -52,8 +59,13 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    
+    const infoIniciais = document.getElementById('controladorForm');
     const formVisible2 = document.getElementById('formCh1');
     const formVisible5 = document.getElementById('formCh40');
+    const divApresentaDados = document.getElementById('apresentarDados');
+    const btnAddNovosDados = document.getElementById('btnAddNovosDados');
+    const btnResultado = document.getElementById('btnResultado');
     document.getElementById('controladorForm').addEventListener('submit', function (event) {
         event.preventDefault(); // Evita que o formulário seja submetido normalmente
         // Obtém o valor da opção selecionada
@@ -62,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Verifica o valor selecionado e aplica as mudanças apenas quando clicar em "Aplicar"
         if (frequencia === '2') {
             formVisible2.style.display = 'block';
-
+            infoIniciais.style.display = 'none';
             const forms = document.querySelectorAll('.form5G');
             forms.forEach(form => {
                 form.style.display = 'none';
@@ -70,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // document.querySelector('.form5G').style.display = 'none';
         } else {
             formVisible5.style.display = 'block';
-
+            infoIniciais.style.display = 'none';
             const forms = document.querySelectorAll('.form2G');
             forms.forEach(form => {
                 form.style.display = 'none';
@@ -111,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault(); // impede o recarregamento da página
             console.log("Formulário submetido", form);
 
-            addloading()
+            addloading(buttons)
             const frequencia = parseInt(document.querySelector('#select1').value);
             const canal = parseInt(document.querySelector(`${formSelector} h1`).getAttribute('value'));
             const download = parseFloat(document.querySelector(`${formSelector} input[name=dw]`).value);
@@ -223,7 +235,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         break;
                     case 11:
                         formCh11.style.display = 'none';
-                        formCh1.style.display = 'block';
+                        if(btnAddNovosDados.style.display === "none"){
+                            btnAddNovosDados.style.display === "block"
+                        };
+                        divApresentaDados.style.display = 'block';
                         break;
 
                     //5GHz
@@ -239,7 +254,8 @@ document.addEventListener('DOMContentLoaded', function () {
     //baixar informações da planilha 
     // Função para buscar e processar os dados da planilha
     async function getDataForAllChannels() {
-        addloading();
+        btnAddNovosDados.style.display = "none";
+        addloading(buttonDw);
         try {
             const channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; // Defina aqui os canais disponíveis na sua planilha
 
@@ -260,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Cria um parágrafo para exibir as informações do canal
                     const paragraph = document.createElement('p');
                     paragraph.textContent = `
-                        Canal: ${canalData.canal}
+                        Canal ${canalData.canal}:
                         Download: ${canalData.download}
                         Upload: ${canalData.upload}
                         Ms: ${canalData.ms}
@@ -321,11 +337,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const textResultado5 = document.getElementById('textResultado5');
             textResultado5.appendChild(paragraph);
         }finally {
+            btnResultado.style.display = "none";
             removerLoad(); // Remove a animação de loading, independentemente do resultado da solicitação
         }
     }
 
-    const buttonDw = document.querySelector('.btnBaixarResultado');
+    const buttonDw = document.querySelector('.btnResultado');
     buttonDw.addEventListener('click', getDataForAllChannels);
 
 

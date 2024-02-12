@@ -15,7 +15,7 @@
         <form id="controladorForm">
             <div class="title">
                 <h1>WiFi Lebre</h1>
-                <P>Testes de Canal</P>
+                <P>Verificador de Performance Canais Wifi</P>
             </div>
             <label for="select">Repetição das anotações:</label>
             <select name="select" id="select">
@@ -188,10 +188,13 @@
             <button type="submit" class="btnSalvar">Salvar</button>
         </form>
     </section>
-    <section>
+
+    <section id="apresentarDados">
         <!--  Seção que apresenta o resultado   -->
-        <p>Clique abaixo para ver o resultado até aqui:</p>
-        <button type="submit" class="btnBaixarResultado btnSalvar">Resultado</button>
+        <div id="escolhaAddFinalizar">
+            <button type="submit" id="btnAddNovosDados" class="addNovosDados">Adicionar +</button>
+            <button type="submit" id="btnResultado" class="btnResultado btnSalvar">Finalizar</button>
+        </div>
         <div>
             <p class="textResultado" id="textResultado1"></p>
             <p class="textResultado" id="textResultado2"></p>

@@ -106,10 +106,42 @@ button:hover {
 }
 
 .form2G,
-.form5G {
+.form5G,
+#apresentarDados {
     display: none;
 }
 
-#select1 {
+#select1, .infoIniciais {
     display: block;
+}
+
+#escolhaAddFinalizar{
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Divide o espaço em duas colunas */
+    gap: 50px; /* Define a distância entre os elementos */
+}
+
+#escolhaAddFinalizar {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente os itens */
+}
+
+.addNovosDados, .btnBaixarResultado {
+    flex: 0 0 auto; /* Impede que os elementos mudem de tamanho */
+    width: 200px; /* Define a largura de cada elemento */
+    margin-right: 20px; /* Define a distância entre os elementos */
+    box-sizing: border-box; /* Garante que a largura inclua preenchimento e borda */
+}
+
+#apresentarDados {
+    padding: 20px;
+    width: 500px;
+    height: auto;
+    background-color: var(--color-white);
+    border-radius: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
