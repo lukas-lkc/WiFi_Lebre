@@ -11,22 +11,58 @@
  * Link onde deve aparecer os dados JSON
  * https://script.google.com/macros/s/AKfycbz1E7Pn6bgv9aVLyyAWLlMzITj3pnY8yZF54ZbX7KwYDcounwvJqjubZkXE9N3E-CJk/exec
  * 
+ * Variáveis:
+ * 
+ * formVisible2 e formVisible5, armazenam o formCh1 e formCh40, respectivamente a partir dos seus IDs
+ * 
+ * selectedOption, armazena o valor do 2° elemento de seleção onde é possível escolher a frequência !!! deletei agora se chama frequencia
+ * 
+ * forms, armazena todos os formulários com classe 2.4GHz ou 5GHz
+ * buttons, representa todos os botões com a classe .btnSalvar
+ * form, recebe uma representação de um formulário de acordo com a função handleFormSubmit, o formSelector seleciona o ID do form
+ * canal recebe o seu valor a partir do dataset.canal do form selecionado
+ * canal recebe um valor int do h1 de cada form de canal
+ * 
+ * frequencia recebe o mesmo valor da variavel selectedOption !!!
+ * 
+ * downlod recebe o input do campo download de cada form
+ * upload recebe o input do campo upload
+ * ms recebe o input do campo ms
+ * dadosParaEnviar recebe um objeto js com os seguintes valores: { frequencia, canal, download, upload, ms }
+ * apiGSheet recebe a API criada no Monkey, e isso gera uma planilha no Google Sheet
+ * formCh1 ao formCh11, recebem a representação de cada form dos canais da frequência 2.4GHz
+ * formCh40 ao X, recebem a representação de cada form dos canais da frequência 5GHz
+ * 
+ * Funções:
+ * 
+ * addloading(), itera sobre todos os botões selecionados e adicione a imagem SVG e a animação da classe btnSalvarAnim a cada um
+ * removerLoad(), itera sobre todos os botões selecionados e adiciona a palavra Salvar, removendo a imagem SVG e a animação a cada um
+ * handleSubmit(), seleciona os dados do formulário que está sendo preenchido pelo user
+ * handleFormSubmit(), responsável por capturar os valores dos formulários e adicionar no obj dadosParaEnviar, através da função handleSubmit(). encaminha informações importantes para a função enviarDadosParaPlanilha(). 
+ * enviarDadosParaPlanilha(), recebe urlPlanilha, dadosParaEnviar, canal e envia para a API, responsável por criar a planilha através dos valores do obj dadosParaEnviar
+ * 
+ * Métodos JS utilizados:
+ * preventDefault(), impede o comportamento padrão associado a um determinado evento.
+ * getElementById(), cria uma referência de um elemento atrávés do seu id
+ * addEventListener(), anexar um ouvinte de evento a um elemento HTML, que permite especificar uma ação para ser executada quando um evento acontecer nesse elemento
+ * querySelectorAll(), cria uma referência a vários elementos que estejam em uma classe específica
+ * 
+ * 
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-    let canalSelecionado;
 
     const formVisible2 = document.getElementById('formCh1');
     const formVisible5 = document.getElementById('formCh40');
     document.getElementById('controladorForm').addEventListener('submit', function (event) {
         event.preventDefault(); // Evita que o formulário seja submetido normalmente
         // Obtém o valor da opção selecionada
-        const selectedOption = document.getElementById('select1').value;
+        const frequencia = document.getElementById('select1').value;
 
         // Verifica o valor selecionado e aplica as mudanças apenas quando clicar em "Aplicar"
-        if (selectedOption === '2.4GHz') {
+        if (frequencia === '2') {
             formVisible2.style.display = 'block';
-            
+
             const forms = document.querySelectorAll('.form5G');
             forms.forEach(form => {
                 form.style.display = 'none';
@@ -76,11 +112,11 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("Formulário submetido", form);
 
             addloading()
-            const frequencia = document.querySelector('#select1').value;
+            const frequencia = parseInt(document.querySelector('#select1').value);
             const canal = parseInt(document.querySelector(`${formSelector} h1`).getAttribute('value'));
-            const download = document.querySelector(`${formSelector} input[name=dw]`).value;
-            const upload = document.querySelector(`${formSelector} input[name=up]`).value;
-            const ms = document.querySelector(`${formSelector} input[name=ms]`).value;
+            const download = parseFloat(document.querySelector(`${formSelector} input[name=dw]`).value);
+            const upload = parseFloat(document.querySelector(`${formSelector} input[name=up]`).value);
+            const ms = parseInt(document.querySelector(`${formSelector} input[name=ms]`).value);
 
             const dadosParaEnviar = { frequencia, canal, download, upload, ms };
             console.log("Dados a serem enviados:", dadosParaEnviar);
@@ -92,23 +128,23 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', handleSubmit);
     }
 
-    const urlPlanilha = 'https://api.sheetmonkey.io/form/nM1XjZZREJ1rZ6fQxGJphG';
+    const apiGSheet = 'https://api.sheetmonkey.io/form/nM1XjZZREJ1rZ6fQxGJphG';
 
     //2GHz
-    handleFormSubmit('#formCh1', urlPlanilha);
-    handleFormSubmit('#formCh2', urlPlanilha);
-    handleFormSubmit('#formCh3', urlPlanilha);
-    handleFormSubmit('#formCh4', urlPlanilha);
-    handleFormSubmit('#formCh5', urlPlanilha);
-    handleFormSubmit('#formCh6', urlPlanilha);
-    handleFormSubmit('#formCh7', urlPlanilha);
-    handleFormSubmit('#formCh8', urlPlanilha);
-    handleFormSubmit('#formCh9', urlPlanilha);
-    handleFormSubmit('#formCh10', urlPlanilha);
-    handleFormSubmit('#formCh11', urlPlanilha);
+    handleFormSubmit('#formCh1', apiGSheet);
+    handleFormSubmit('#formCh2', apiGSheet);
+    handleFormSubmit('#formCh3', apiGSheet);
+    handleFormSubmit('#formCh4', apiGSheet);
+    handleFormSubmit('#formCh5', apiGSheet);
+    handleFormSubmit('#formCh6', apiGSheet);
+    handleFormSubmit('#formCh7', apiGSheet);
+    handleFormSubmit('#formCh8', apiGSheet);
+    handleFormSubmit('#formCh9', apiGSheet);
+    handleFormSubmit('#formCh10', apiGSheet);
+    handleFormSubmit('#formCh11', apiGSheet);
 
     //5GHz
-    handleFormSubmit('#formCh40', urlPlanilha);
+    handleFormSubmit('#formCh40', apiGSheet);
 
 
     // envia os dados para a planilha
@@ -198,5 +234,99 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
     }
+
+
+    //baixar informações da planilha 
+    // Função para buscar e processar os dados da planilha
+    async function getDataForAllChannels() {
+        addloading();
+        try {
+            const channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; // Defina aqui os canais disponíveis na sua planilha
+
+            // Objeto para armazenar o canal com o maior número de downloads
+            let maxDownloads = 0;
+            let maxDownloadsCanal = null;
+
+            // Itera por todos os canais
+            for (const canal of channels) {
+                // Faz a solicitação para o canal atual
+                const response = await fetch(`https://script.google.com/macros/s/AKfycbzFPk-5MmPC191z0l7zNFlggftueA6S8wtZHofS7ay7p0ZpIzt5aiTBC0zrL_UdRrVg/exec?canal=${canal}`);
+                const data = await response.json();
+
+                // Verifica se há dados retornados para o canal atual
+                if (data.retornoDaSaida && data.retornoDaSaida.length > 0) {
+                    const canalData = data.retornoDaSaida[0]; // Obtém o objeto de dados real do canal atual
+
+                    // Cria um parágrafo para exibir as informações do canal
+                    const paragraph = document.createElement('p');
+                    paragraph.textContent = `
+                        Canal: ${canalData.canal}
+                        Download: ${canalData.download}
+                        Upload: ${canalData.upload}
+                        Ms: ${canalData.ms}
+                        `;
+
+                    // Adiciona o parágrafo à div com o ID textResultado
+                    const textResultado1 = document.getElementById('textResultado1');
+                    textResultado1.appendChild(paragraph);
+
+                    // Verifica se o valor de download atual é maior que o valor máximo encontrado até agora
+                    if (canalData.download > maxDownloads) {
+                        maxDownloads = canalData.download;
+                        maxDownloadsCanal = canalData.canal;
+                    }
+                } else {
+                    console.log(`Nenhum dado retornado para o canal ${canal}.`);
+
+                    const paragraph = document.createElement('p');
+                    paragraph.textContent = `
+                        Nenhum dado retornado para o canal ${canal}.`;
+
+                    // Adiciona o parágrafo à div com o ID textResultado
+                    const textResultado2 = document.getElementById('textResultado2');
+                    textResultado2.appendChild(paragraph);
+                }
+            }
+
+            // Após iterar por todos os canais, exibe o canal com o maior número de downloads
+            if (maxDownloadsCanal !== null) {
+                console.log(`Canal ${maxDownloadsCanal} tem o download mais rápido: ${maxDownloads}`);
+
+                const paragraph = document.createElement('p');
+                paragraph.textContent = `
+                    Canal ${maxDownloadsCanal} tem o download mais rápido: ${maxDownloads}`;
+
+                // Adiciona o parágrafo à div com o ID textResultado
+                const textResultado3 = document.getElementById('textResultado3');
+                textResultado3.appendChild(paragraph);
+            } else {
+                console.log('Nenhum dado de download encontrado.');
+
+                const paragraph = document.createElement('p');
+                paragraph.textContent = `
+                    Nenhum dado de download encontrado..`;
+
+                // Adiciona o parágrafo à div com o ID textResultado
+                const textResultado4 = document.getElementById('textResultado4');
+                textResultado4.appendChild(paragraph);
+            }
+        } catch (error) {
+            console.error('Ocorreu um erro:', error);
+
+            const paragraph = document.createElement('p');
+            paragraph.textContent = `
+                Ocorreu um erro:', ${error}`;
+
+            // Adiciona o parágrafo à div com o ID textResultado
+            const textResultado5 = document.getElementById('textResultado5');
+            textResultado5.appendChild(paragraph);
+        }finally {
+            removerLoad(); // Remove a animação de loading, independentemente do resultado da solicitação
+        }
+    }
+
+    const buttonDw = document.querySelector('.btnBaixarResultado');
+    buttonDw.addEventListener('click', getDataForAllChannels);
+
 
 });
