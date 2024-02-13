@@ -1,0 +1,42 @@
+Média com exclusão de outliers
+
+Esta abordagem envolve calcular a média das velocidades de download, mas primeiro excluindo valores que são considerados outliers. 
+Um método comum para identificar outliers é usar a regra do 1.5 * IQR (intervalo interquartil).
+
+Calcule o intervalo interquartil (IQR):
+
+O IQR é a diferença entre o terceiro quartil (Q3) e o primeiro quartil (Q1) dos dados.
+IQR = Q3 - Q1
+Identifique os limites para outliers:
+
+Use a regra do 1.5 * IQR para identificar os limites para outliers.
+Limite inferior = Q1 - 1.5 * IQR
+Limite superior = Q3 + 1.5 * IQR
+Exclua os outliers:
+
+Remova todos os valores que estão abaixo do limite inferior ou acima do limite superior.
+Calcule a média:
+
+Calcule a média das velocidades de download restantes.
+Exemplo:
+Suponha que você tenha as seguintes velocidades de download (em Mbps):
+
+Copy code
+48, 50, 52, 55, 46, 200
+Calcule Q1, Q3 e IQR:
+
+Q1 = 48
+Q3 = 55
+IQR = 55 - 48 = 7
+Identifique os limites para outliers:
+
+Limite inferior = 48 - 1.5 * 7 = 37.5
+Limite superior = 55 + 1.5 * 7 = 65.5
+Exclua os outliers:
+
+Remova o valor 200, pois está acima do limite superior.
+Calcule a média das velocidades de download restantes:
+
+(48 + 50 + 52 + 55 + 46) / 5 = 50.2 Mbps
+
+//

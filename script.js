@@ -1,8 +1,8 @@
 /**
  * 
- * next tasks: btns animations, clear innerHTML pargrapher for new informations, 
- * css results, performance download results, 
- * notification to downloadResults complete if I can't improve performance dw, to change ms to latence,
+ * next tasks: criar algorítimo para média com exclusão de outliers em seguida o algoritmo para apresentar a média dos resulados coletados: dw, up, ms
+ * performance download results, 
+ * notification to downloadResults complete if I can't improve performance dw,
  * to check why data frequencia is undefined and fix that, add option to check resultos for each frequence.
  * 
  * future tasks: input to recive user's API URL and Sheet URL.
@@ -13,6 +13,7 @@
  * 
  * Vídeo para usar os dados da planilha: https://www.youtube.com/watch?v=bCw85WL5Iw8
  * Planilha criada para salvar os dados https://docs.google.com/spreadsheets/d/1kdlP6e9nW2DCtGS1dHRsQ9fFqv4g3F-6Vbiuy-SK6Ek/edit#gid=0
+ * 
  * Config da API da planilha abaixo, tá dando erro. Qt devo trocar para CH
  * https://script.google.com/u/0/home/projects/1v2QxKW4R3MnbeCBqpLaAwHy31cRFsQwYKZwR5Lda6MKROScJoIjuxmrT/edit
  * Link onde deve aparecer os dados JSON
@@ -59,13 +60,15 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    
+
     const infoIniciais = document.getElementById('controladorForm');
     const formVisible2 = document.getElementById('formCh1');
     const formVisible5 = document.getElementById('formCh40');
     const divApresentaDados = document.getElementById('apresentarDados');
     const btnAddNovosDados = document.getElementById('btnAddNovosDados');
     const btnResultado = document.getElementById('btnResultado');
+    const tabela = document.getElementById('tabela');
+    
     document.getElementById('controladorForm').addEventListener('submit', function (event) {
         event.preventDefault(); // Evita que o formulário seja submetido normalmente
         // Obtém o valor da opção selecionada
@@ -235,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         break;
                     case 11:
                         formCh11.style.display = 'none';
-                        if(btnAddNovosDados.style.display === "none"){
+                        if (btnAddNovosDados.style.display === "none") {
                             btnAddNovosDados.style.display === "block"
                         };
                         divApresentaDados.style.display = 'block';
@@ -255,6 +258,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para buscar e processar os dados da planilha
     async function getDataForAllChannels() {
         btnAddNovosDados.style.display = "none";
+        tabela.style.display = "block"
         addloading(buttonDw);
         try {
             const channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; // Defina aqui os canais disponíveis na sua planilha
@@ -262,6 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Objeto para armazenar o canal com o maior número de downloads
             let maxDownloads = 0;
             let maxDownloadsCanal = null;
+            let tableData = ''; // Variável para armazenar os dados da tabela
 
             // Itera por todos os canais
             for (const canal of channels) {
@@ -273,18 +278,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.retornoDaSaida && data.retornoDaSaida.length > 0) {
                     const canalData = data.retornoDaSaida[0]; // Obtém o objeto de dados real do canal atual
 
-                    // Cria um parágrafo para exibir as informações do canal
-                    const paragraph = document.createElement('p');
-                    paragraph.textContent = `
-                        Canal ${canalData.canal}:
-                        Download: ${canalData.download}
-                        Upload: ${canalData.upload}
-                        Ms: ${canalData.ms}
-                        `;
-
-                    // Adiciona o parágrafo à div com o ID textResultado
-                    const textResultado1 = document.getElementById('textResultado1');
-                    textResultado1.appendChild(paragraph);
+                    // Adiciona os dados do canal à variável de dados da tabela
+                    tableData += `
+                        <tr>
+                            <td>${canalData.canal}</td>
+                            <td>${canalData.download}</td>
+                            <td>${canalData.upload}</td>
+                            <td>${canalData.ms}</td>
+                        </tr>`;
 
                     // Verifica se o valor de download atual é maior que o valor máximo encontrado até agora
                     if (canalData.download > maxDownloads) {
@@ -303,7 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     textResultado2.appendChild(paragraph);
                 }
             }
-
+            const tableBody = document.getElementById('tableData');
+            tableBody.innerHTML = tableData;
             // Após iterar por todos os canais, exibe o canal com o maior número de downloads
             if (maxDownloadsCanal !== null) {
                 console.log(`Canal ${maxDownloadsCanal} tem o download mais rápido: ${maxDownloads}`);
@@ -326,6 +328,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const textResultado4 = document.getElementById('textResultado4');
                 textResultado4.appendChild(paragraph);
             }
+
         } catch (error) {
             console.error('Ocorreu um erro:', error);
 
@@ -336,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Adiciona o parágrafo à div com o ID textResultado
             const textResultado5 = document.getElementById('textResultado5');
             textResultado5.appendChild(paragraph);
-        }finally {
+        } finally {
             btnResultado.style.display = "none";
             removerLoad(); // Remove a animação de loading, independentemente do resultado da solicitação
         }

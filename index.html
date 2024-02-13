@@ -45,7 +45,7 @@
             <input type="number" id="ms1" name="ms" required><br>
             <button type="submit" class="btnSalvar">Salvar</button>
         </form>
-
+        
         <form class="form2G" id="formCh2" data-canal="2">
             <h1 id="ch2" name="ch" value="2">Canal 2</h1>
             <label for="dw2">Velocidade de Download (Mbps):</label>
@@ -190,19 +190,30 @@
     </section>
 
     <section id="apresentarDados">
-        <!--  Seção que apresenta o resultado   -->
+        <!-- Seção que apresenta o resultado -->
         <div id="escolhaAddFinalizar">
             <button type="submit" id="btnAddNovosDados" class="addNovosDados">Adicionar +</button>
             <button type="submit" id="btnResultado" class="btnResultado btnSalvar">Finalizar</button>
         </div>
-        <div>
-            <p class="textResultado" id="textResultado1"></p>
-            <p class="textResultado" id="textResultado2"></p>
-            <p class="textResultado" id="textResultado3"></p>
-            <p class="textResultado" id="textResultado4"></p>
-            <p class="textResultado" id="textResultado5"></p>
+        <div id="tabela">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Canal</th>
+                        <th>Download</th>
+                        <th>Upload</th>
+                        <th>Latência (ms)</th>
+                    </tr>
+                </thead>
+                <tbody id="tableData">
+                    <!-- Os dados serão adicionados dinamicamente aqui -->
+                </tbody>
+            </table>
         </div>
+        <p class="textResultado" id="textResultado2"></p>
+        <p class="textResultado" id="textResultado3"></p>
+        <p class="textResultado" id="textResultado4"></p>
+        <p class="textResultado" id="textResultado5"></p>
     </section>
 </body>
-
 </html>
