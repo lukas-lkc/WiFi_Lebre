@@ -1,4 +1,5 @@
 /**
+ * IMPORTANTE o for que cria a "planilha" dos resultados está limitado a apenas 11. isso pode dificultar os cálculos.
  * 
  * next tasks: criar algorítimo para média com exclusão de outliers em seguida o algoritmo para apresentar a média dos resulados coletados: dw, up, ms
  * performance download results, 
@@ -68,7 +69,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnAddNovosDados = document.getElementById('btnAddNovosDados');
     const btnResultado = document.getElementById('btnResultado');
     const tabela = document.getElementById('tabela');
-    
+    const tabelaResultadoFinal = document.getElementById('tabelaResultadoFinal');
+
+
     document.getElementById('controladorForm').addEventListener('submit', function (event) {
         event.preventDefault(); // Evita que o formulário seja submetido normalmente
         // Obtém o valor da opção selecionada
@@ -96,7 +99,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //animação dos botões
     const buttons = document.querySelectorAll('.btnSalvar'); // Use querySelectorAll para selecionar todos os elementos com a classe .btnSalvar
-    // Defina a função addloading
+
+    //Adiciona o ícone de loading em todos os botões com a classe '.btnSalvar'
     function addloading() {
 
         // Itere sobre todos os botões selecionados e adicione a imagem SVG e a animação a cada um
@@ -108,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" stroke-width="4" /></svg>`;
         });
     }
-
+    //Remove o ícone de loading em todos os botões com a classe '.btnSalvar'
     function removerLoad() {
         // Itere sobre todos os botões selecionados e adicione a imagem SVG e a animação a cada um
         buttons.forEach(button => {
@@ -117,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    //pega os dados das variáveis e direciona para a planilha
+    //pega os dados das variáveis e cria um obj js
     function handleFormSubmit(formSelector, urlPlanilha) {
         const form = document.querySelector(formSelector);
         const canal = form.dataset.canal;
@@ -143,9 +147,10 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', handleSubmit);
     }
 
+    //definição da API do monkey para criar a planilha que salvar os dados
     const apiGSheet = 'https://api.sheetmonkey.io/form/nM1XjZZREJ1rZ6fQxGJphG';
 
-    //2GHz
+    //Colet os dados preenchidos dos forms 2GHz
     handleFormSubmit('#formCh1', apiGSheet);
     handleFormSubmit('#formCh2', apiGSheet);
     handleFormSubmit('#formCh3', apiGSheet);
@@ -158,11 +163,10 @@ document.addEventListener('DOMContentLoaded', function () {
     handleFormSubmit('#formCh10', apiGSheet);
     handleFormSubmit('#formCh11', apiGSheet);
 
-    //5GHz
+    ////Colet os dados preenchidos dos forms 5GHz
     handleFormSubmit('#formCh40', apiGSheet);
 
-
-    // envia os dados para a planilha
+    //Cria o pacote que será enviado com o obj JSON no body
     function enviarDadosParaPlanilha(url, dados, canal) {
         fetch(url, {
             method: 'post',
@@ -253,12 +257,101 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    outliersMedia() //chama a função que calcula a média dos valores de um array
+    
+    //ordena 
 
-    //baixar informações da planilha 
+
+    //Calcular Q1
+    function calcularQ1(conjuntoExemplo) {
+        let preQ1 = (conjuntoExemplo.length + 1) / 4;
+        let preQ1Arredondado = Math.round(preQ1);
+        console.log("Pré Q1 arredondado:", preQ1Arredondado);
+        return conjuntoExemplo[preQ1Arredondado - 1];
+    }
+
+    //calcular Q3
+    function calcularQ3(conjuntoExemplo) {
+        let preQ3 = 3 * (conjuntoExemplo.length + 1) / 4;
+        let preQ3Arredondado = Math.round(preQ3);
+        console.log("Pré Q3 arredondado:", preQ3Arredondado);
+        return conjuntoExemplo[preQ3Arredondado - 1];
+    }
+
+    //encontra os valores de corte e altera o array
+    function outliers(q1, q3, iqr, conjuntoExemplo) {
+        /**
+         * Limite inferior = Q1 - 1,5 * IQR 
+         * 
+         * Limite superior = Q3 + 1,5 * IQR 
+         * 
+         */
+        const li = q1 - 1.5 * iqr; //Limite inferior
+        console.log("Limite inferior: ",li);
+        const ls = q3 + 1.5 * iqr; //Limite superior
+        console.log("Limite superior: ",ls);
+        const outliersArray = [];
+
+        //Remova os valores abaixo de LI e acima de LS do conjunto de dados
+
+        for (const item of conjuntoExemplo) {
+            if (item > li && item < ls) {
+                outliersArray.push(item);
+            }
+        }
+        return outliersArray;
+    }
+
+    //encotra a média aritmética do conjunto já filtrado pela function outlies
+    function outliersMedia() {
+        ///* array aleatório para testes
+        const tamanhoArray = Math.floor(Math.random() * 100) + 1; // Gera um número aleatório entre 1 e 100
+        const conjuntoExemplo = Array.from({ length: tamanhoArray }, () => Math.random() * 100); // Cria o array aleatório
+
+        console.log(`Tamanho do array: ${tamanhoArray}`);
+        console.log(conjuntoExemplo);
+        //*/
+
+        /* array predefinido para testes
+        const conjuntoExemplo = [46, 48, 50, 52];
+        */
+
+        conjuntoExemplo.sort((a, b) => a - b); //ordena os valores do array em ordem crescente, para que a exclusão outliers funcione.
+        console.log("Tamanho do array:", conjuntoExemplo.length);
+        console.log("Valores do array:", conjuntoExemplo);
+        //*/
+        if (conjuntoExemplo.length >= 5) {
+            const q1 = calcularQ1(conjuntoExemplo);
+            const q3 = calcularQ3(conjuntoExemplo);
+            const iQR = q3 - q1;
+
+            const outliersArray = outliers(q1, q3, iQR, conjuntoExemplo);
+
+            console.log(outliersArray);
+
+            if (outliersArray.length > 0) {
+                const media = outliersArray.reduce((total, valor) => total + valor, 0) / outliersArray.length;
+                const mediaComUmaCasaDecimal = media.toFixed(1);
+                console.log("Média aritmética dos outliers:", mediaComUmaCasaDecimal);
+            } else {
+                console.log("O array de outliers está vazio");
+            }
+        } else {
+            //O tamanho do array é insuficiente para calcular Q1 e Q3.
+            //Exclusão de outliers só funciona com 5 valores ou mais, menos que isso não é indicado.
+            console.log("Com poucos dados, não foi necessário realizar a exclusão de outliers.");
+            //fazer apenas a média aritmética
+            const media = conjuntoExemplo.reduce((total, valor) => total + valor, 0) / conjuntoExemplo.length;
+            const mediaComUmaCasaDecimal = media.toFixed(1);
+            console.log("Média aritmética:", mediaComUmaCasaDecimal);
+        }
+    }
+
     // Função para buscar e processar os dados da planilha
+    // Cria a planilha de visualização com os dados baixados 
     async function getDataForAllChannels() {
         btnAddNovosDados.style.display = "none";
-        tabela.style.display = "block"
+        tabela.style.display = "block";
         addloading(buttonDw);
         try {
             const channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; // Defina aqui os canais disponíveis na sua planilha
@@ -266,31 +359,40 @@ document.addEventListener('DOMContentLoaded', function () {
             // Objeto para armazenar o canal com o maior número de downloads
             let maxDownloads = 0;
             let maxDownloadsCanal = null;
-            let tableData = ''; // Variável para armazenar os dados da tabela
 
             // Itera por todos os canais
             for (const canal of channels) {
                 // Faz a solicitação para o canal atual
                 const response = await fetch(`https://script.google.com/macros/s/AKfycbzFPk-5MmPC191z0l7zNFlggftueA6S8wtZHofS7ay7p0ZpIzt5aiTBC0zrL_UdRrVg/exec?canal=${canal}`);
                 const data = await response.json();
+                console.log('Data:', data);
 
                 // Verifica se há dados retornados para o canal atual
-                if (data.retornoDaSaida && data.retornoDaSaida.length > 0) {
-                    const canalData = data.retornoDaSaida[0]; // Obtém o objeto de dados real do canal atual
+                if (data.retornoDaSaida && Array.isArray(data.retornoDaSaida)) {
+                    const canalData = data.retornoDaSaida; // Obtém o array de dados para o canal atual
 
-                    // Adiciona os dados do canal à variável de dados da tabela
-                    tableData += `
-                        <tr>
-                            <td>${canalData.canal}</td>
-                            <td>${canalData.download}</td>
-                            <td>${canalData.upload}</td>
-                            <td>${canalData.ms}</td>
-                        </tr>`;
+                    // Atualiza a tabela na interface do usuário com os dados do canal atual
+                    const tableBody = document.getElementById('tableData');
 
-                    // Verifica se o valor de download atual é maior que o valor máximo encontrado até agora
-                    if (canalData.download > maxDownloads) {
-                        maxDownloads = canalData.download;
-                        maxDownloadsCanal = canalData.canal;
+                    // Itera sobre os dados do canal atual
+                    for (const item of canalData) {
+                        // Adiciona os dados do canal à variável de dados da tabela
+                        const tableRow = document.createElement('tr');
+                        tableRow.setAttribute('data-canal', item.download); // Define o atributo data-canal
+                        tableRow.innerHTML = `
+                            <td>${item.canal}</td>
+                            <td>${item.download}</td>
+                            <td>${item.upload}</td>
+                            <td>${item.ms}</td>
+                        `;
+                        tableBody.appendChild(tableRow);
+
+                        // Verifica se o valor de download atual é maior que o valor máximo encontrado até agora
+                        if (item.download > maxDownloads) {
+                            maxDownloads = item.download;
+                            maxDownloadsCanal = item.canal;
+                            // Adiciona destaque à linha correspondente na tabela HTML
+                        }
                     }
                 } else {
                     console.log(`Nenhum dado retornado para o canal ${canal}.`);
@@ -299,20 +401,33 @@ document.addEventListener('DOMContentLoaded', function () {
                     paragraph.textContent = `
                         Nenhum dado retornado para o canal ${canal}.`;
 
-                    // Adiciona o parágrafo à div com o ID textResultado
+                    // Adiciona o parágrafo à div com o ID textResultado2
                     const textResultado2 = document.getElementById('textResultado2');
                     textResultado2.appendChild(paragraph);
                 }
             }
-            const tableBody = document.getElementById('tableData');
-            tableBody.innerHTML = tableData;
+
+            // Após iterar por todos os canais, exibe o canal com o maior número de downloads
             // Após iterar por todos os canais, exibe o canal com o maior número de downloads
             if (maxDownloadsCanal !== null) {
                 console.log(`Canal ${maxDownloadsCanal} tem o download mais rápido: ${maxDownloads}`);
 
+                // Remove qualquer destaque existente de outras linhas
+                const linhasDestacadas = document.querySelectorAll('.destaque');
+                linhasDestacadas.forEach(linha => {
+                    linha.classList.remove('destaque');
+                });
+
+                // Adiciona destaque à linha correspondente na tabela HTML
+                const tableRow = document.querySelector(`#tableData tr[data-canal="${maxDownloads}"]`);
+                console.log(tableRow);
+                if (tableRow) {
+                    tableRow.classList.add('destaque');
+                }
+
                 const paragraph = document.createElement('p');
                 paragraph.textContent = `
-                    Canal ${maxDownloadsCanal} tem o download mais rápido: ${maxDownloads}`;
+                Canal ${maxDownloadsCanal} tem o download mais rápido: ${maxDownloads}`;
 
                 // Adiciona o parágrafo à div com o ID textResultado
                 const textResultado3 = document.getElementById('textResultado3');
@@ -340,11 +455,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const textResultado5 = document.getElementById('textResultado5');
             textResultado5.appendChild(paragraph);
         } finally {
+            //quando carregar todos os dados salvos na planilha
             btnResultado.style.display = "none";
+            tabelaResultadoFinal.style.display = "block" //ativa a visualização da planilha final
             removerLoad(); // Remove a animação de loading, independentemente do resultado da solicitação
+            //chamar função de apresentação/crição da planilha final aqui
         }
     }
-
+    //btn para iniciar a função getDataForAllChannels() acima
     const buttonDw = document.querySelector('.btnResultado');
     buttonDw.addEventListener('click', getDataForAllChannels);
 

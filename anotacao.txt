@@ -3,40 +3,72 @@ Média com exclusão de outliers
 Esta abordagem envolve calcular a média das velocidades de download, mas primeiro excluindo valores que são considerados outliers. 
 Um método comum para identificar outliers é usar a regra do 1.5 * IQR (intervalo interquartil).
 
-Calcule o intervalo interquartil (IQR):
+Conjunto utilizado no exemplo:
+46, 48, 50, 52, 55, 200
 
-O IQR é a diferença entre o terceiro quartil (Q3) e o primeiro quartil (Q1) dos dados.
-IQR = Q3 - Q1
-Identifique os limites para outliers:
+1 - Formula para encontrar Q1: 
 
-Use a regra do 1.5 * IQR para identificar os limites para outliers.
-Limite inferior = Q1 - 1.5 * IQR
-Limite superior = Q3 + 1.5 * IQR
-Exclua os outliers:
+    (n + 1) / 4
 
-Remova todos os valores que estão abaixo do limite inferior ou acima do limite superior.
-Calcule a média:
+    n = o numero total de elementos do conjunto
 
-Calcule a média das velocidades de download restantes.
-Exemplo:
-Suponha que você tenha as seguintes velocidades de download (em Mbps):
+    (6+1)/4  
+    7/4: 1,7 (valor precisa ser arredondado) -> 2 
 
-Copy code
-48, 50, 52, 55, 46, 200
-Calcule Q1, Q3 e IQR:
+    Pega esse resultado, passa pelo conjunto e coleta o número equivalente. Nesse exemplo é o número 48
 
-Q1 = 48
-Q3 = 55
-IQR = 55 - 48 = 7
-Identifique os limites para outliers:
+    Q1: 48
 
-Limite inferior = 48 - 1.5 * 7 = 37.5
-Limite superior = 55 + 1.5 * 7 = 65.5
-Exclua os outliers:
+2 - Formula para encontrar Q3: 
 
-Remova o valor 200, pois está acima do limite superior.
-Calcule a média das velocidades de download restantes:
+    3 * (n+1)/4 
 
-(48 + 50 + 52 + 55 + 46) / 5 = 50.2 Mbps
+    3 * (6+1)/4 
 
-//
+    3*7/4 = 5,25 (após arredondado) -> 5 
+
+    Pega esse resultado, passa pelo conjunto e coleta o número equivalente. Nesse exemplo é o número 55
+
+    Q3: 55
+
+
+3 - Formula para encontrar IQR: 
+    Q3 - Q1 = IQR 
+
+    55 - 48 = 7
+
+    Q1: 48 
+    Q3: 55
+    IQR: 7
+
+4 -Defina os limites para outliers: 
+
+    Limite inferior = Q1 - 1,5 * IQR 
+
+    48 - 1,5 * 7 = 37,5 
+    ---------------------
+    Limite superior = Q3 + 1,5 * IQR 
+
+    55 + 1,5 * 7 = 65,5
+
+5 - Exclua os outliers: 
+
+    Remova os valores abaixo de LI (37,5) e acima de LS (65,5) do conjunto de dados.
+
+    46, 48, 50, 52, 55, 200 
+
+    Após passar o "filtro":
+
+    46, 48, 50, 52, 55
+    
+
+    6 - Fazer a média aritmética:
+
+    46 + 48 + 50 + 52 + 55 = 251
+    251/5 = 50,2 
+
+    50,2
+
+
+
+

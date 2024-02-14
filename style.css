@@ -149,17 +149,24 @@ button:hover {
     transform: translate(-50%, -50%);
 }
 
-#tabela{
+#tabela, #tabelaResultadoFinal {
     width: 447px;
     margin-left: 25px;
     text-align: center;
     display: none;
+    position: relative; /* Adiciona position relative */
+    max-height: 400px; /* Define uma altura máxima para a tabela */
+    overflow-y: auto; /* Adiciona barra de rolagem vertical se a tabela exceder a altura máxima */
 }
 
 /*cabeçalho*/
 th { 
     padding: 20px; /* Adiciona preenchimento */
     background-color: var(--color-green1);
+}
+/*teste destaca linha do valor*/
+.destaque {
+    background-color: yellow; /* Você pode ajustar a cor de fundo conforme desejado */
 }
 
 /*valores*/
