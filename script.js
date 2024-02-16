@@ -257,93 +257,16 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    outliersMedia() //chama a função que calcula a média dos valores de um array
-    
-    //ordena 
-
-
-    //Calcular Q1
-    function calcularQ1(conjuntoExemplo) {
-        let preQ1 = (conjuntoExemplo.length + 1) / 4;
-        let preQ1Arredondado = Math.round(preQ1);
-        console.log("Pré Q1 arredondado:", preQ1Arredondado);
-        return conjuntoExemplo[preQ1Arredondado - 1];
-    }
-
-    //calcular Q3
-    function calcularQ3(conjuntoExemplo) {
-        let preQ3 = 3 * (conjuntoExemplo.length + 1) / 4;
-        let preQ3Arredondado = Math.round(preQ3);
-        console.log("Pré Q3 arredondado:", preQ3Arredondado);
-        return conjuntoExemplo[preQ3Arredondado - 1];
-    }
-
-    //encontra os valores de corte e altera o array
-    function outliers(q1, q3, iqr, conjuntoExemplo) {
-        /**
-         * Limite inferior = Q1 - 1,5 * IQR 
-         * 
-         * Limite superior = Q3 + 1,5 * IQR 
-         * 
-         */
-        const li = q1 - 1.5 * iqr; //Limite inferior
-        console.log("Limite inferior: ",li);
-        const ls = q3 + 1.5 * iqr; //Limite superior
-        console.log("Limite superior: ",ls);
-        const outliersArray = [];
-
-        //Remova os valores abaixo de LI e acima de LS do conjunto de dados
-
-        for (const item of conjuntoExemplo) {
-            if (item > li && item < ls) {
-                outliersArray.push(item);
-            }
+    function mediaAritmetica(conjuntoExemplo) {
+        if (conjuntoExemplo.length >= 2) {
+            const media = conjuntoExemplo.reduce((total, valor) => total + valor, 0) / conjuntoExemplo.length; //aplica uma função de callback a cada elemento de um array e acumula os resultados, em seguida divide pela quantidade de valores
+            const mediaComUmaCasaDecimal = media.toFixed(1); //apenas uma casa decimal
+            console.log("Média aritmética: ", mediaComUmaCasaDecimal);
+            return mediaComUmaCasaDecimal;
         }
-        return outliersArray;
-    }
-
-    //encotra a média aritmética do conjunto já filtrado pela function outlies
-    function outliersMedia() {
-        ///* array aleatório para testes
-        const tamanhoArray = Math.floor(Math.random() * 100) + 1; // Gera um número aleatório entre 1 e 100
-        const conjuntoExemplo = Array.from({ length: tamanhoArray }, () => Math.random() * 100); // Cria o array aleatório
-
-        console.log(`Tamanho do array: ${tamanhoArray}`);
-        console.log(conjuntoExemplo);
-        //*/
-
-        /* array predefinido para testes
-        const conjuntoExemplo = [46, 48, 50, 52];
-        */
-
-        conjuntoExemplo.sort((a, b) => a - b); //ordena os valores do array em ordem crescente, para que a exclusão outliers funcione.
-        console.log("Tamanho do array:", conjuntoExemplo.length);
-        console.log("Valores do array:", conjuntoExemplo);
-        //*/
-        if (conjuntoExemplo.length >= 5) {
-            const q1 = calcularQ1(conjuntoExemplo);
-            const q3 = calcularQ3(conjuntoExemplo);
-            const iQR = q3 - q1;
-
-            const outliersArray = outliers(q1, q3, iQR, conjuntoExemplo);
-
-            console.log(outliersArray);
-
-            if (outliersArray.length > 0) {
-                const media = outliersArray.reduce((total, valor) => total + valor, 0) / outliersArray.length;
-                const mediaComUmaCasaDecimal = media.toFixed(1);
-                console.log("Média aritmética dos outliers:", mediaComUmaCasaDecimal);
-            } else {
-                console.log("O array de outliers está vazio");
-            }
-        } else {
-            //O tamanho do array é insuficiente para calcular Q1 e Q3.
-            //Exclusão de outliers só funciona com 5 valores ou mais, menos que isso não é indicado.
-            console.log("Com poucos dados, não foi necessário realizar a exclusão de outliers.");
-            //fazer apenas a média aritmética
-            const media = conjuntoExemplo.reduce((total, valor) => total + valor, 0) / conjuntoExemplo.length;
-            const mediaComUmaCasaDecimal = media.toFixed(1);
-            console.log("Média aritmética:", mediaComUmaCasaDecimal);
+        else {
+            console.log("O array está vazio ou com menos de 2 sequências de dados");
+            return null;
         }
     }
 
@@ -371,28 +294,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.retornoDaSaida && Array.isArray(data.retornoDaSaida)) {
                     const canalData = data.retornoDaSaida; // Obtém o array de dados para o canal atual
 
+                    // Ordena os valores de download e upload em ordem crescente.util para exclusão de outliers que ainda não fiz funcionar
+                    canalData.sort((a, b) => a.download - b.download);
+                    canalData.sort((a, b) => a.upload - b.upload);
+
+                    // Calcula a média para download e upload
+                    const downloadValues = canalData.map(item => item.download);
+                    const uploadValues = canalData.map(item => item.upload);
+                    const downloadMedia = mediaAritmetica(downloadValues);
+                    const uploadMedia = mediaAritmetica(uploadValues);
+
+                    const msValues = canalData.map(item => item.ms);
+                    const mediaMsValues = mediaAritmetica(msValues);
+
                     // Atualiza a tabela na interface do usuário com os dados do canal atual
-                    const tableBody = document.getElementById('tableData');
+                    const tableBody = document.getElementById('tableDataFinal');
 
-                    // Itera sobre os dados do canal atual
-                    for (const item of canalData) {
-                        // Adiciona os dados do canal à variável de dados da tabela
-                        const tableRow = document.createElement('tr');
-                        tableRow.setAttribute('data-canal', item.download); // Define o atributo data-canal
-                        tableRow.innerHTML = `
-                            <td>${item.canal}</td>
-                            <td>${item.download}</td>
-                            <td>${item.upload}</td>
-                            <td>${item.ms}</td>
-                        `;
-                        tableBody.appendChild(tableRow);
+                    // Adiciona os dados do canal à variável de dados da tabela
+                    const tableRow = document.createElement('tr');
+                    tableRow.setAttribute('data-canal', canal);
+                    tableRow.innerHTML = `
+                        <td>${canal}</td>
+                        <td>${downloadMedia}</td>
+                        <td>${uploadMedia}</td>
+                        <td>${mediaMsValues}</td>
+                    `;
+                    tableBody.appendChild(tableRow);
 
-                        // Verifica se o valor de download atual é maior que o valor máximo encontrado até agora
-                        if (item.download > maxDownloads) {
-                            maxDownloads = item.download;
-                            maxDownloadsCanal = item.canal;
-                            // Adiciona destaque à linha correspondente na tabela HTML
-                        }
+                    // Verifica se o valor de download atual é maior que o valor máximo encontrado até agora
+                    if (downloadMedia > maxDownloads) {
+                        maxDownloads = downloadMedia;
+                        maxDownloadsCanal = canal;
+                        console.log("Maior dw até aqui: ", maxDownloads);
+                        console.log("Canal do maior dw até aqui: ", maxDownloadsCanal);
+                        // Adiciona destaque à linha correspondente na tabela HTML
                     }
                 } else {
                     console.log(`Nenhum dado retornado para o canal ${canal}.`);
@@ -408,7 +343,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Após iterar por todos os canais, exibe o canal com o maior número de downloads
-            // Após iterar por todos os canais, exibe o canal com o maior número de downloads
             if (maxDownloadsCanal !== null) {
                 console.log(`Canal ${maxDownloadsCanal} tem o download mais rápido: ${maxDownloads}`);
 
@@ -419,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 // Adiciona destaque à linha correspondente na tabela HTML
-                const tableRow = document.querySelector(`#tableData tr[data-canal="${maxDownloads}"]`);
+                const tableRow = document.querySelector(`#tableDataFinal tr[data-canal="${maxDownloadsCanal}"]`);
                 console.log(tableRow);
                 if (tableRow) {
                     tableRow.classList.add('destaque');
@@ -427,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const paragraph = document.createElement('p');
                 paragraph.textContent = `
-                Canal ${maxDownloadsCanal} tem o download mais rápido: ${maxDownloads}`;
+                    Canal ${maxDownloadsCanal} tem o download mais rápido: ${maxDownloads}`;
 
                 // Adiciona o parágrafo à div com o ID textResultado
                 const textResultado3 = document.getElementById('textResultado3');

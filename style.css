@@ -170,7 +170,7 @@ th {
 }
 
 /*valores*/
-#tableData{
+#tableData, #tableDataFinal{
     background-color: var(--color-whiteBackG);
 }
 
