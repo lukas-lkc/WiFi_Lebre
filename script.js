@@ -119,15 +119,15 @@ document.addEventListener('DOMContentLoaded', function () {
             button.innerHTML = 'Salvar';
         });
     }
-
-
     //pega os dados das variáveis e cria um obj js
+
+    
     function handleFormSubmit(formSelector, urlPlanilha) {
         const form = document.querySelector(formSelector);
         const canal = form.dataset.canal;
 
         const handleSubmit = (event) => {
-            event.preventDefault(); // impede o recarregamento da página
+            event.preventDefault();                                                                                      // impede o recarregamento da página
             console.log("Formulário submetido", form);
 
             addloading(buttons)
