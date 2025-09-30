@@ -1,21 +1,18 @@
 # WiFi_Lebre
-WiFi Lebre é uma ferramenta de teste que permite avaliar e entender a performance dos canais Wi-Fi na sua maloca (casa). Com ela você pode comparar a qualidade do seu wifi em diferentes canais e identificar qual o melhor dentre eles.
+O WiFi Lebre é uma ferramenta simples e prática para avaliar a performance dos canais Wi-Fi na sua casa.
+Com ela, você pode comparar a qualidade do sinal em diferentes canais e identificar qual oferece a melhor experiência de conexão.
 
 ## Sobre o Projeto
 
-[Descrição sobre o projeto]
-
-## Configuração
-
-[Instruções sobre como configurar e instalar o projeto]
+O WiFi Lebre foi desenvolvido para ajudar usuários a escolher o canal Wi-Fi mais eficiente, reduzindo interferências e aumentando a estabilidade da rede.
+O funcionamento é baseado no preenchimento de um formulário com os resultados de testes de velocidade em cada canal. A partir desses dados, a ferramenta calcula métricas de qualidade e indica o canal mais adequado para uso.
 
 ## Uso
 
-[Instruções sobre como usar o projeto]
-
-## Contribuição
-
-[Instruções sobre como contribuir com o projeto]
+- Acesse a configuração do seu roteador e selecione o canal 1.
+- Realize um teste de velocidade e insira os resultados na página: WiFi Lebre
+- Repita o processo para os demais canais (2, 3, 4, …).
+- Ao finalizar o preenchimento, a página exibirá qual é o melhor canal para sua rede.
 
 ## Licença
 
